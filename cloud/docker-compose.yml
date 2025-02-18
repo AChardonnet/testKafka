@@ -128,6 +128,21 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
       KSQL_ZOOKEEPER_CONNECT: zookeeper:2181
 
+  mqtt-proxy:
+    image: confluentinc/cp-kafka-mqtt:latest
+    container_name: mqtt-proxy
+    depends_on:
+      - kafka
+      - zookeeper
+    ports:
+      - "1883:1883"
+      - "8883:8883"
+    environment:
+      KAFKA_MQTT_BOOTSTRAP_SERVERS: 'kafka:29092'
+      KAFKA_MQTT_TOPIC_REGEX_LIST: "test-temp:test-temp, test:test" # correspondance entre les topics MQTT et Kafka (kafka:mqtt)
+    networks:
+      - default
+
 volumes:
   kafka-data:
     name: kafka-data
